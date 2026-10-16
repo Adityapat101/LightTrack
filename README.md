@@ -2,6 +2,8 @@
 
 A small computer vision project that follows a moving light and maps its position to a cursor. The desktop app uses Python, OpenCV, and PyAutoGUI. The web demo uses OpenCV.js to show the same processing steps without installing anything.
 
+**[Live demo](https://lighttrack-beta.vercel.app/)** · **[Download the Python app](https://lighttrack-beta.vercel.app/LightTrack-python.zip)**
+
 ## Run the Python app
 
 Use Python 3.12 or newer and a webcam:
@@ -51,6 +53,8 @@ npm run dev
 ```
 
 Open <http://127.0.0.1:4173>. No npm packages need to be installed. Vercel runs the same build and serves `dist/` as static files. The Python download is generated from the maintained source during the build.
+
+The current deployment was published with the Vercel CLI. Automatic GitHub-to-Vercel deployment is not connected because the Vercel account needs its GitHub login connection first. To publish an update from a linked local checkout, run `vercel deploy --prod`.
 
 ## Checks
 
