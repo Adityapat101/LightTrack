@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A small OpenCV project that follows a moving light. Try the camera demo or run the Python app locally.">
+  <meta name="theme-color" content="#f5f5f0">
+  <title>LightTrack — follow a little light</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/runtime.js"></script>
+  <script defer src="/vendor/opencv.js" onerror="window.dispatchEvent(new Event('opencv-error'))"></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="/" aria-label="LightTrack home"><span class="brand-icon" aria-hidden="true">↗</span>LightTrack</a>
+    <a class="source-link" href="https://github.com/Adityapat101/LightTrack" target="_blank" rel="noreferrer">View source <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">A SMALL COMPUTER VISION PROJECT</p>
+      <h1>Follow a little light.</h1>
+      <p>Move a light in front of your camera. LightTrack finds the bright, moving part and follows it with a cursor.</p>
+    </section>
+
+    <section class="workbench" aria-label="Light tracking demo">
+      <div class="viewer-column">
+        <div class="viewer-toolbar">
+          <div class="view-options" aria-label="Preview mode">
+            <button class="view active" data-view="tracking" aria-pressed="true">Tracking</button>
+            <button class="view" data-view="foreground" aria-pressed="false">Motion</button>
+            <button class="view" data-view="mask" aria-pressed="false">Mask</button>
+          </div>
+          <span id="source-label" class="source-label">NO INPUT</span>
+        </div>
+        <div class="stage" id="stage">
+          <canvas id="preview" width="640" height="440" aria-label="Light tracking preview"></canvas>
+          <div id="empty-state" class="empty-state">
+            <div class="light-mark" aria-hidden="true"><span></span><i></i></div>
+            <h2>A bright spot is all it takes.</h2>
+            <p>Use your camera, or try a generated example.<br>No camera needed for the example.</p>
+          </div>
+          <div id="cursor" class="tracked-cursor" hidden aria-hidden="true"><svg viewBox="0 0 24 30"><path d="M2 2L21 18L12 19L8 28Z"/></svg></div>
+          <div id="stage-badge" class="stage-badge" hidden><span></span><span id="stage-status">Looking for light</span></div>
+        </div>
+        <div class="readouts" aria-label="Tracking results">
+          <div><span class="readout-label">STATUS</span><strong id="tracking-state">Not started</strong></div>
+          <div><span class="readout-label">REGIONS</span><strong id="regions">—</strong></div>
+          <div><span class="readout-label">POSITION</span><strong id="position">—, —</strong></div>
+        </div>
+      </div>
+
+      <aside class="controls">
+        <div class="panel-heading"><span class="step-number">01</span><h2>Try it out</h2></div>
+        <p class="panel-copy">Keep your camera still. A small torch in a dim room works well.</p>
+        <button class="button primary" id="start-camera" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="12" height="12" rx="3"/><path d="m15 10 6-3v10l-6-3"/></svg>Use my camera</button>
+        <button class="button secondary" id="start-example" disabled>Try example <span aria-hidden="true">↗</span></button>
+        <p id="engine-status" class="engine-status" role="status">Loading OpenCV…</p>
+        <p id="error" class="error" role="alert" hidden></p>
+        <div class="session-actions" id="session-actions" hidden>
+          <button id="reset">Reset background</button><button id="stop">Stop</button>
+        </div>
+        <div class="divider"></div>
+        <div class="panel-heading"><span class="step-number">02</span><h2>Find the sweet spot</h2></div>
+        <label class="slider-label" for="brightness"><span>Brightness threshold</span><output id="brightness-value" for="brightness">215</output></label>
+        <input id="brightness" type="range" min="120" max="250" value="215">
+        <p class="hint">Higher values pick out only the brightest pixels.</p>
+        <label class="slider-label" for="motion"><span>Motion threshold</span><output id="motion-value" for="motion">22</output></label>
+        <input id="motion" type="range" min="5" max="90" value="22">
+        <p class="hint">Raise this if background movement is being detected.</p>
+        <label class="slider-label" for="erosion"><span>Erosion kernel</span><output id="erosion-value" for="erosion">3 × 3</output></label>
+        <input id="erosion" type="range" min="1" max="7" step="2" value="3">
+        <p class="hint">A larger kernel clears away more small specks.</p>
+        <p class="privacy"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="8" width="10" height="8" rx="2"/><path d="M7 8V6a3 3 0 0 1 6 0v2"/></svg>Camera frames stay in your browser.</p>
+      </aside>
+    </section>
+
+    <section class="notes">
+      <div class="note-main"><p class="eyebrow">WHAT'S HAPPENING</p><h2>A few image-processing steps.<br>No trained model.</h2><p>The demo subtracts a running background, keeps the bright pixels, and combines the two masks. Erosion removes small specks. The largest remaining contour becomes the target.</p><p class="small-note">The example is a generated scene passed through the same OpenCV pipeline as the camera.</p></div>
+      <div class="python-note"><span class="code-label">PYTHON + OPENCV + PYAUTOGUI</span><h3>Move the desktop cursor, too.</h3><p>This web demo keeps its cursor inside the preview. Run the Python app locally to control your actual mouse.</p><a class="download-link" href="/LightTrack-python.zip" download>Download the Python app <span aria-hidden="true">↓</span></a><p class="small-note">Run <code>python lighttrack.py</code>, then press <kbd>M</kbd> to enable cursor control. <kbd>Q</kbd> quits.</p></div>
+    </section>
+  </main>
+  <footer class="site-footer wrap"><span>LightTrack <span class="footer-dot">·</span> Aditya Pathak</span><a href="https://github.com/Adityapat101/LightTrack#readme" target="_blank" rel="noreferrer">Setup &amp; project notes ↗</a></footer>
+  <video id="camera" autoplay muted playsinline hidden></video>
+</body>
+</html>

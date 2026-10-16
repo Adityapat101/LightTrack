@@ -1,0 +1,23 @@
+name: Project checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  tracking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless tracking dependencies
+        run: python -m pip install 'opencv-python-headless>=4.13,<6' 'numpy>=2,<3'
+      - name: Test Python tracking
+        run: python -m unittest discover -s tests -v
+      - name: Test browser OpenCV pipeline
+        run: npm test
+      - name: Build demo and Python download
+        run: npm run build

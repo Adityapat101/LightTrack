@@ -1,0 +1,12 @@
+{
+  "name": "lighttrack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Moving-light tracking with OpenCV, with a small browser demo.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test-web.mjs",
+    "dev": "python3 -m http.server 4173 --bind 127.0.0.1 --directory dist"
+  },
+  "engines": { "node": ">=22" }
+}
